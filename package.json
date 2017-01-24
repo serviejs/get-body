@@ -1,0 +1,57 @@
+{
+  "name": "get-body",
+  "version": "0.0.0",
+  "description": "General HTTP request body parser",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "lint": "tslint \"src/**/*.ts\"",
+    "build": "rimraf dist && tsc",
+    "specs": "jest --coverage",
+    "test": "npm run -s lint && npm run -s build && npm run -s specs",
+    "prepublish": "typings install && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/blakeembrey/node-get-body.git"
+  },
+  "keywords": [
+    "http",
+    "request",
+    "stream",
+    "parse",
+    "body",
+    "get",
+    "promise"
+  ],
+  "author": {
+    "name": "Blake Embrey",
+    "email": "hello@blakeembrey.com",
+    "url": "http://blakeembrey.me"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/blakeembrey/node-get-body/issues"
+  },
+  "homepage": "https://github.com/blakeembrey/node-get-body",
+  "devDependencies": {
+    "@types/jest": "^16.0.4",
+    "jest": "^18.1.0",
+    "rimraf": "^2.5.4",
+    "servie": "^0.1.2",
+    "throwback": "^2.0.0",
+    "tslint": "^4.3.1",
+    "tslint-config-standard": "^3.0.0",
+    "typescript": "^2.1.5",
+    "typings": "^2.1.0"
+  },
+  "dependencies": {
+    "@types/http-errors": "^1.5.32",
+    "@types/raw-body": "^2.1.0",
+    "http-errors": "^1.5.1",
+    "raw-body": "^2.2.0"
+  }
+}
