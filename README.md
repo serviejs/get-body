@@ -4,6 +4,7 @@
 [![NPM downloads][downloads-image]][downloads-url]
 [![Build status][travis-image]][travis-url]
 [![Test coverage][coveralls-image]][coveralls-url]
+[![Greenkeeper badge][greenkeeper-image]][greenkeeper-url]
 
 > General HTTP request body parser.
 
@@ -58,3 +59,5 @@ MIT
 [travis-url]: https://travis-ci.org/blakeembrey/node-get-body
 [coveralls-image]: https://img.shields.io/coveralls/blakeembrey/node-get-body.svg?style=flat
 [coveralls-url]: https://coveralls.io/r/blakeembrey/node-get-body?branch=master
+[greenkeeper-image]: https://badges.greenkeeper.io/blakeembrey/node-get-body.svg
+[greenkeeper-url]: https://greenkeeper.io/
