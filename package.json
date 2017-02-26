@@ -44,7 +44,7 @@
     "servie": "^0.2.0",
     "throwback": "^2.0.0",
     "tslint": "^4.3.1",
-    "tslint-config-standard": "^3.0.0",
+    "tslint-config-standard": "^4.0.0",
     "typescript": "^2.2.1",
     "typings": "^2.1.0"
   },
