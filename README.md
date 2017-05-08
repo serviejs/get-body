@@ -1,10 +1,10 @@
 # Get Body
 
-[![NPM version][npm-image]][npm-url]
-[![NPM downloads][downloads-image]][downloads-url]
-[![Build status][travis-image]][travis-url]
-[![Test coverage][coveralls-image]][coveralls-url]
-[![Greenkeeper badge][greenkeeper-image]][greenkeeper-url]
+[![NPM version](https://img.shields.io/npm/v/get-body.svg?style=flat)](https://npmjs.org/package/get-body)
+[![NPM downloads](https://img.shields.io/npm/dm/get-body.svg?style=flat)](https://npmjs.org/package/get-body)
+[![Build status](https://img.shields.io/travis/serviejs/get-body.svg?style=flat)](https://travis-ci.org/serviejs/get-body)
+[![Test coverage](https://img.shields.io/coveralls/serviejs/get-body.svg?style=flat)](https://coveralls.io/r/serviejs/get-body?branch=master)
+[![Greenkeeper badge](https://badges.greenkeeper.io/serviejs/get-body.svg)](https://greenkeeper.io/)
 
 > General HTTP request body parser.
 
@@ -49,15 +49,4 @@ This project is written using [TypeScript](https://github.com/Microsoft/TypeScri
 
 ## License
 
-MIT
-
-[npm-image]: https://img.shields.io/npm/v/get-body.svg?style=flat
-[npm-url]: https://npmjs.org/package/get-body
-[downloads-image]: https://img.shields.io/npm/dm/get-body.svg?style=flat
-[downloads-url]: https://npmjs.org/package/get-body
-[travis-image]: https://img.shields.io/travis/blakeembrey/node-get-body.svg?style=flat
-[travis-url]: https://travis-ci.org/blakeembrey/node-get-body
-[coveralls-image]: https://img.shields.io/coveralls/blakeembrey/node-get-body.svg?style=flat
-[coveralls-url]: https://coveralls.io/r/blakeembrey/node-get-body?branch=master
-[greenkeeper-image]: https://badges.greenkeeper.io/blakeembrey/node-get-body.svg
-[greenkeeper-url]: https://greenkeeper.io/
+Apache 2.0

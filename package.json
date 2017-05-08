@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/blakeembrey/node-get-body.git"
+    "url": "git://github.com/serviejs/get-body.git"
   },
   "keywords": [
     "http",
@@ -34,9 +34,9 @@
   },
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/blakeembrey/node-get-body/issues"
+    "url": "https://github.com/serviejs/get-body/issues"
   },
-  "homepage": "https://github.com/blakeembrey/node-get-body",
+  "homepage": "https://github.com/serviejs/get-body",
   "devDependencies": {
     "@types/jest": "^19.2.0",
     "jest": "^19.0.0",
