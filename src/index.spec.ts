@@ -1,83 +1,137 @@
-import { Request } from 'servie'
+import { createHeaders } from 'servie'
+import { createBody, TextBody, EmptyBody } from 'servie/dist/body/node'
 import { createGzip, createDeflate } from 'zlib'
 import { parse } from './'
 
 describe('get-body', () => {
   describe('text', () => {
-    it('should parse body as text', () => {
-      const req = new Request({ url: '', body: 'hello world' })
+    it('should parse body as text', async () => {
+      const body = createBody('hello world')
 
-      return parse(req.stream(), req.headers.object())
-        .then(body => expect(body).toEqual('hello world'))
+      const result = await parse(body.stream(), body.headers.asObject())
+
+      expect(result).toEqual('hello world')
     })
 
-    it('should support gzip', () => {
-      const req = new Request({ url: '', body: 'hello world', headers: { 'Content-Encoding': 'gzip' } })
+    it('should support gzip', async () => {
+      const body = createBody('hello world')
 
-      return parse(req.stream().pipe(createGzip()), req.headers.object())
-        .then(body => expect(body).toEqual('hello world'))
+      body.headers.set('Content-Encoding', 'gzip')
+
+      const result = await parse(
+        body.stream().pipe(createGzip()),
+        body.headers.asObject()
+      )
+
+      expect(result).toEqual('hello world')
     })
 
-    it('should support deflate', () => {
-      const req = new Request({ url: '', body: 'hello world', headers: { 'Content-Encoding': 'deflate' } })
+    it('should support deflate', async () => {
+      const body = createBody('hello world')
 
-      return parse(req.stream().pipe(createDeflate()), req.headers.object())
-        .then(body => expect(body).toEqual('hello world'))
+      body.headers.set('Content-Encoding', 'deflate')
+
+      const result = await parse(
+        body.stream().pipe(createDeflate()),
+        body.headers.asObject()
+      )
+
+      expect(result).toEqual('hello world')
     })
   })
 
   describe('json', () => {
-    it('should parse body as json', () => {
-      const req = new Request({ url: '', body: { hello: 'world' } })
+    it('should parse body as json', async () => {
+      const body = createBody({ hello: 'world' })
 
-      return parse(req.stream(), req.headers.object())
-        .then(body => expect(body).toEqual({ hello: 'world' }))
+      const result = await parse(body.stream(), body.headers.asObject())
+
+      expect(result).toEqual({ hello: 'world' })
     })
 
-    it('should accept empty strings', () => {
-      const req = new Request({ url: '', body: '', headers: { 'Content-Type': 'application/json' } })
+    it('should accept empty strings', async () => {
+      const body = createBody('')
 
-      return parse(req.stream(), req.headers.object())
-        .then(body => expect(body).toEqual({}))
+      body.headers.set('Content-Type', 'application/json')
+
+      const result = await parse(body.stream(), body.headers.asObject())
+
+      expect(result).toEqual({})
     })
 
-    it('should not accept primitive json', () => {
-      const req = new Request({ url: '', body: JSON.stringify('test'), headers: { 'Content-Type': 'application/json; charset=utf-8' } })
+    it('should not accept primitive json', async () => {
+      const rawBody = JSON.stringify('test')
+      const headers = createHeaders({
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(rawBody)
+      })
+      const body = new TextBody({ rawBody, headers })
 
-      return parse(req.stream(), req.headers.object())
-        .catch(err => expect(err.message).toEqual('Invalid JSON, only supports object and array'))
+      expect.assertions(1)
+
+      try {
+        await parse(body.stream(), body.headers.asObject())
+      } catch (e) {
+        expect(e.message).toEqual('Invalid JSON, only supports object and array')
+      }
     })
   })
 
   describe('form', () => {
-    it('should parse body as a form', () => {
-      const req = new Request({ url: '', body: 'hello=world', headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
+    it('should parse body as a form', async () => {
+      const rawBody = 'hello=world'
+      const headers = createHeaders({
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': Buffer.byteLength(rawBody)
+      })
+      const body = new TextBody({ rawBody, headers })
 
-      return parse(req.stream(), req.headers.object())
-        .then(body => expect(body).toEqual({ hello: 'world' }))
+      const result = await parse(body.stream(), body.headers.asObject())
+
+      expect(result).toEqual({ hello: 'world' })
     })
   })
 
   describe('errors', () => {
-    it('should error on unknown content types', () => {
-      const req = new Request({ url: '', body: '', headers: { 'Content-Type': 'foo/bar' } })
+    it('should error on unknown content types', async () => {
+      const headers = createHeaders({ 'Content-Type': 'foo/bar' })
+      const body = new TextBody({ rawBody: 'foobar', headers })
 
-      return parse(req.stream(), req.headers.object())
-        .catch(err => expect(err.message).toEqual('Unsupported content-type: foo/bar'))
+      expect.assertions(1)
+
+      try {
+        await parse(body.stream(), body.headers.asObject())
+      } catch (e) {
+        expect(e.message).toEqual('Unsupported content-type: foo/bar')
+      }
     })
 
-    it('should error on no content type', () => {
-      const req = new Request({ url: '' })
+    it('should error on no content type', async () => {
+      const body = new EmptyBody({ rawBody: undefined })
 
-      return parse(req.stream(), req.headers.object())
-        .catch(err => expect(err.message).toEqual('Missing content-type'))
+      expect.assertions(1)
+
+      try {
+        await parse(body.stream(), body.headers.asObject())
+      } catch (e) {
+        expect(e.message).toEqual('Missing content-type')
+      }
     })
 
-    it('should error on unknown content encoding', () => {
-      const req = new Request({ url: '', body: '', headers: { 'Content-Type': 'application/json', 'Content-Encoding': 'foobar' } })
+    it('should error on unknown content encoding', async () => {
+      const headers = createHeaders({
+        'Content-Type': 'application/json',
+        'Content-Encoding': 'foobar'
+      })
+      const body = new TextBody({ rawBody: 'foobar', headers })
 
-      return parse(req.stream(), req.headers.object())
-        .catch(err => expect(err.message).toEqual('Unsupport content-encoding: foobar'))
+      expect.assertions(1)
+
+      try {
+        await parse(body.stream(), body.headers.asObject())
+      } catch (e) {
+        expect(e.message).toEqual('Unsupported content-encoding: foobar')
+      }
     })
   })
 })

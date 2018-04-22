@@ -42,9 +42,7 @@ export const decoders: Decoders = {
  * Default JSON parser.
  */
 function jsonParse (str: string) {
-  if (str.length === 0) {
-    return {}
-  }
+  if (str.length === 0) return {}
 
   if (!STRICT_JSON_REGEXP.test(str)) {
     throw createError(400, 'Invalid JSON, only supports object and array')
@@ -66,27 +64,15 @@ export const textTypes = ['text/plain', 'text/html']
 export function parse (stream: Readable, headers: Headers, options: Options = {}) {
   const type = getType(headers)
 
-  if (!type) {
-    return Promise.reject(createError(415, 'Missing content-type'))
-  }
+  if (!type) return Promise.reject(createError(415, 'Missing content-type'))
 
   const jsonType = options.jsonTypes || jsonTypes
-
-  if (jsonType.indexOf(type) > -1) {
-    return json(stream, headers, options)
-  }
-
   const formType = options.formTypes || formTypes
-
-  if (formType.indexOf(type) > -1) {
-    return form(stream, headers, options)
-  }
-
   const textType = options.textTypes || textTypes
 
-  if (textType.indexOf(type) > -1) {
-    return text(stream, headers, options)
-  }
+  if (jsonType.indexOf(type) > -1) return json(stream, headers, options)
+  if (formType.indexOf(type) > -1) return form(stream, headers, options)
+  if (textType.indexOf(type) > -1) return text(stream, headers, options)
 
   return Promise.reject(createError(415, `Unsupported content-type: ${type}`))
 }
@@ -109,16 +95,14 @@ export function form (stream: Readable, headers: Headers, options: Options = {})
  * Parse the stream as text.
  */
 export function text (stream: Readable, headers: Headers, options: Options = {}): Promise<string> {
-  const [err, req, length] = inflate(stream, headers, options.decoders)
+  const { error, body, length } = inflate(stream, headers, options.decoders)
 
-  if (err) {
-    return Promise.reject<string>(err)
-  }
+  if (error) return Promise.reject<string>(error)
 
   const limit = options.limit || DEFAULT_LIMIT
   const encoding = options.encoding || DEFAULT_ENCODING
 
-  return getRawBody(req, { length, limit, encoding })
+  return getRawBody(body, { length, limit, encoding })
 }
 
 /**
@@ -128,35 +112,38 @@ export function inflate (
   stream: Readable,
   headers: Headers,
   encoding: Decoders = decoders
-): [createError.HttpError| undefined, Readable, number | undefined] {
+) {
   const enc = String(headers['content-encoding'] || 'identity').toLowerCase()
 
   if (enc === 'identity') {
-    return [undefined, stream, ~~headers['content-length']]
+    return {
+      body: stream,
+      length: ~~headers['content-length']
+    }
   }
 
   if (encoding[enc]) {
-    return [undefined, encoding[enc](stream), undefined]
+    return {
+      body: encoding[enc](stream)
+    }
   }
 
-  return [createError(`Unsupport content-encoding: ${enc}`), stream, undefined]
+  return {
+    body: stream,
+    error: createError(`Unsupported content-encoding: ${enc}`)
+  }
 }
 
 /**
  * Return the `content-type` string.
  */
-export function getType (headers: Headers) {
-  let contentType = headers['content-type']
+export function getType (headers: Headers): string | undefined {
+  const contentType = headers['content-type']
 
-  if (!contentType) {
-    return
-  }
+  if (!contentType) return undefined
 
-  if (Array.isArray(contentType)) {
-    contentType = contentType[0]
-  }
+  const type = Array.isArray(contentType) ? contentType[0] : contentType
+  const index = type.indexOf(';')
 
-  const index = contentType.indexOf(';')
-
-  return index > -1 ? contentType.substr(0, index) : contentType
+  return index > -1 ? type.substr(0, index) : type
 }

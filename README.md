@@ -4,7 +4,6 @@
 [![NPM downloads](https://img.shields.io/npm/dm/get-body.svg?style=flat)](https://npmjs.org/package/get-body)
 [![Build status](https://img.shields.io/travis/serviejs/get-body.svg?style=flat)](https://travis-ci.org/serviejs/get-body)
 [![Test coverage](https://img.shields.io/coveralls/serviejs/get-body.svg?style=flat)](https://coveralls.io/r/serviejs/get-body?branch=master)
-[![Greenkeeper badge](https://badges.greenkeeper.io/serviejs/get-body.svg)](https://greenkeeper.io/)
 
 > General HTTP request body parser.
 
