@@ -4,12 +4,12 @@ import { parse as formParse } from 'querystring'
 import getRawBody = require('raw-body')
 import createError = require('http-errors')
 
-const DEFAULT_LIMIT = 100 * 1024 // 100kb.
-const DEFAULT_ENCODING = 'utf8'
-
 // Allowed whitespace is defined in RFC 7159.
 // http://www.rfc-editor.org/rfc/rfc7159.txt
 const STRICT_JSON_REGEXP = /^[\x20\x09\x0a\x0d]*[\[\{]/
+
+export const DEFAULT_LIMIT = 100 * 1024 // 100kb.
+export const DEFAULT_ENCODING = 'utf8'
 
 export interface Headers {
   [key: string]: string | string[]
