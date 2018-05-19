@@ -50,8 +50,7 @@
   },
   "dependencies": {
     "@types/http-errors": "^1.5.32",
-    "@types/raw-body": "^2.1.0",
     "http-errors": "^1.5.1",
-    "raw-body": "^2.2.0"
+    "raw-body": "^2.3.3"
   }
 }
